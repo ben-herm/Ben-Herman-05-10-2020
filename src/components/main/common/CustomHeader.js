@@ -1,8 +1,12 @@
-import React, {useState, useEffect, useCallback} from 'react';
-
-import {View, StyleSheet, Switch} from 'react-native';
+import React from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {View,Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import {Toolbar} from 'react-native-material-ui';
 import {Icon} from 'native-base';
+import LinearGradient from 'react-native-linear-gradient';
+import {changeTempUnits} from '../../../actions/LocationsActions'
+
+const width = Dimensions.get('window').width;
 const handleee = (props) => {
   return (
     <View>
@@ -15,17 +19,34 @@ const handleee = (props) => {
   );
 };
 
-const changeTheme = () => {
-  const theme = useTheme();
+const changeUnitsBtn = (units) => {
+  const dispatch = useDispatch()
   return (
-    <Switch
-      value={theme.mode === 'dark'}
-      onValueChange={(value) => theme.setMode(value ? 'dark' : 'light')}
-    />
+    <TouchableOpacity
+      onPress={() => dispatch(changeTempUnits(!units))}
+      style={{
+        margin: 5,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        paddingHorizontal: 10,
+        backgroundColor: 'transparent',
+      }}>
+      <LinearGradient
+        colors={['black', 'black']}
+        style={{...styles.gradient, width: '120%'}}>
+        <Text style={styles.favBtnTxt}>{'Change Units'}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 };
 
 export default renderHeader = (props) => {
+
+  const {units} = useSelector(
+    (state) => state.LocationsReducer,
+  );
   const {title} = props;
   return (
     <View
@@ -39,6 +60,7 @@ export default renderHeader = (props) => {
         leftElementContainer={{marginLeft: 220}}
         style={{rightElement: {flex: 1}}}
         centerElement={title}
+        rightElement={changeUnitsBtn(units)}
       />
     </View>
   );
@@ -47,5 +69,17 @@ export default renderHeader = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  gradient: {
+    flex: 1,
+    width,
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  favBtnTxt: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: 'white',
   },
 });

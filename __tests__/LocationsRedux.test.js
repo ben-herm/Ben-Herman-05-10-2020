@@ -1,6 +1,6 @@
 
 import reducer, {INITIAL_STATE} from '../src/reducers/LocationsRedux';
-import {locations, favorite} from '../jsonMockUp';
+import {locations, favorite} from '../mockUps/jsonMockUp';
 import * as types from '../src/actions/types';
 
 describe('todos reducer', () => {

@@ -15,3 +15,8 @@ export const deleteFromFavorites = payload => ({
   payload,
 })
 
+export const changeTempUnits = payload => ({
+  type: types.CHANGE_TEMPERATURE_UNITS,
+  payload,
+})
+

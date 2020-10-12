@@ -1,6 +1,6 @@
 import * as actions from '../src/actions/LocationsActions';
 import * as types from '../src/actions/types';
-import {locations} from '../jsonMockUp'
+import {locations} from '../mockUps/jsonMockUp'
 
 describe('actions', () => {
   it('should set Locations', () => {

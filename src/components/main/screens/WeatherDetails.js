@@ -12,8 +12,8 @@ import {
 import {
   updateLocations,
   deleteFromFavorites,
+  changeTempUnits,
 } from '../../../actions/LocationsActions';
-import Modal from 'react-native-modal';
 import images from '../../../resources/Images';
 import {convertToCelsius, convertToDay} from '../../../utils/utilities';
 import {Card} from 'react-native-elements';
@@ -21,7 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const width = Dimensions.get('window').width;
 const WeatherDetails = ({route, navigation, location}) => {
-  const {locations, favoriteLocations} = useSelector(
+  const {locations, favoriteLocations, units} = useSelector(
     (state) => state.LocationsReducer,
   );
 
@@ -36,7 +36,7 @@ const WeatherDetails = ({route, navigation, location}) => {
   const {
     data: {Headline, DailyForecasts},
   } = forecast;
-  
+
   useEffect(() => {
     checkIfLocationIsFavorite();
   }, [location]);
@@ -157,11 +157,17 @@ const WeatherDetails = ({route, navigation, location}) => {
                 fontSize: 12,
                 paddingHorizontal: 2,
               }}>
-              {convertToCelsius(Maximum.Value)}
+              {units ? convertToCelsius(Maximum.Value) : Maximum.Value}
             </Text>
-            <Text style={{...styles.TemperatureTxt, fontSize: 14}}>
-              &#x2103;
-            </Text>
+            {units ? (
+              <Text style={{...styles.TemperatureTxt, fontSize: 14}}>
+                &#x2103;
+              </Text>
+            ) : (
+              <Text style={{...styles.TemperatureTxt, fontSize: 14}}>
+                &#x2109;
+              </Text>
+            )}
           </View>
         </View>
       );
@@ -197,22 +203,22 @@ const WeatherDetails = ({route, navigation, location}) => {
               {/* <Text style={styles.overViewTxt}>{`City: ${location.city}`}</Text> */}
               <View
                 style={{flex: 1, flexDirection: 'row', alignSelf: 'center'}}>
-                {changeTemperatureUnit()}
+                {/* {changeTemperatureUnit()} */}
                 <Text
                   style={{
                     ...styles.TemperatureTxt,
                     marginTop: 4,
                     paddingHorizontal: 5,
                   }}>
-                  {isCelsius ? Metric.Value + '' : Imperial.Value + ''}
+                  {units ? Metric.Value + '' : Imperial.Value + ''}
                 </Text>
-                {isCelsius ? (
+                {units ? (
                   <Text style={{...styles.TemperatureTxt, fontSize: 26}}>
                     &#x2103;
                   </Text>
                 ) : (
                   <Text style={{...styles.TemperatureTxt, fontSize: 26}}>
-                   &#x2109;
+                    &#x2109;
                   </Text>
                 )}
               </View>

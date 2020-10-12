@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent} from '@testing-library/react-native';
 import WeatherDetails from '../src/components/main/screens/WeatherDetails';
-import {favorite} from '../jsonMockUp';
+import {favorite} from '../mockUps/jsonMockUp';
 import {useSelector, useDispatch} from 'react-redux';
 import {store, persistor} from '../src/redux';
 import renderer from 'react-test-renderer';

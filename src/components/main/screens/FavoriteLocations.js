@@ -10,6 +10,7 @@ import {
   Text,
   SafeAreaView,
 } from 'react-native';
+import Orientation from 'react-native-orientation';
 import WeatherDetails from '../../main/screens/WeatherDetails';
 import {navigateToPage} from '../../../utils/utilities';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,11 +18,25 @@ import {CustomLoader} from '../common/CustomLoader';
 import images from '../../../resources/Images';
 const {width} = Dimensions.get('window');
 const FavoriteLocations = (props) => {
-  const {favoriteLocations, locations} = useSelector(
+  const {favoriteLocations, units} = useSelector(
     (state) => state.LocationsReducer,
   );
   const [favoritesDetails, setFavoritesDetails] = useState(null);
+  const [isPortrait, setIsPortrait] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
+
+  useEffect(() => {
+    Orientation.addOrientationListener(_orientationDidChange);
+  }, []);
+
+  const _orientationDidChange = (orientation) => {
+    if (orientation === 'LANDSCAPE') {
+      setIsPortrait(false);
+    } else {
+
+      setIsPortrait(true);
+    }
+  };
   useEffect(() => {
     setFavorites();
   }, [favoriteLocations]);
@@ -49,31 +64,39 @@ const FavoriteLocations = (props) => {
         WeatherIcon,
         name,
         key,
-        WeatherText,
         Temperature: {Metric, Imperial},
       },
     } = data;
     return (
-      <TouchableOpacity onPress={() => navigateToPage('SearchPage', props.navigation, {
-        location: data.item
-      })}>
+      <TouchableOpacity
+        onPress={() =>
+          navigateToPage('SearchPage', props.navigation, {
+            location: data.item,
+          })
+        }>
         <View style={styles.imageCard}>
-          <View style={{flex: 1, alignSelf: 'flex-start', padding: 10}}>
+          <View style={{flex: 1, padding: 10}}>
             <Text style={styles.TxtStyle}>{name.toUpperCase()}</Text>
           </View>
-          <View style={{flex: 1, alignSelf: 'flex-start', padding: 10}}>
+          <View style={{flex: 1, padding: 10}}>
             <Text style={styles.TxtStyle}>{key}</Text>
           </View>
           <View
             style={{
               flex: 1,
-              alignSelf: 'flex-start',
               padding: 10,
               flexDirection: 'row',
             }}>
-            <Text style={{...styles.TxtStyle}}>{`${Metric.Value}`}&#x2103;{`\n/${Imperial.Value}`}&#x2109;</Text>
+            {units ? (
+              <Text style={{...styles.TxtStyle}}>
+                {`${Metric.Value}`}&#x2103;
+              </Text>
+            ) : (
+              <Text style={{...styles.TxtStyle}}>
+                {`${Imperial.Value}`}&#x2109;
+              </Text>
+            )}
           </View>
-     
           <View style={{flex: 1}}>
             <Image
               style={styles.imageForecast}
@@ -81,7 +104,6 @@ const FavoriteLocations = (props) => {
               source={images[WeatherIcon]}
             />
           </View>
-
           {/* <WeatherDetails location={data.item} /> */}
         </View>
       </TouchableOpacity>
@@ -93,6 +115,7 @@ const FavoriteLocations = (props) => {
   const renderFlatList = () => {
     return (
       <FlatList
+        key={isPortrait}
         bounces={false}
         data={favoritesDetails || []}
         showsVerticalScrollIndicator={true}
@@ -123,9 +146,11 @@ const FavoriteLocations = (props) => {
         return favoritesDetails.length > 0 ? (
           <View
             style={{
+              flex: 1,
+              width,
               alignSelf: 'center',
-              alignItems: 'space-between',
-              justifyContent: 'space-between',
+              alignItems: 'center',
+              justifyContent: 'center',
               marginTop: 10,
             }}>
             {renderFlatList()}
@@ -139,7 +164,7 @@ const FavoriteLocations = (props) => {
       <View
         style={{
           flex: 1,
-          width,
+          // width,
           alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
@@ -149,16 +174,19 @@ const FavoriteLocations = (props) => {
       </View>
     );
   };
-
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        ...styles.container,
+        // justifyContent: isPortrait ? 'center' : null,
+      }}>
       <LinearGradient
         colors={['#009FFD', '#2A2A72']}
         style={{
           flex: 1,
-          width,
-          justifyContent: 'center',
-          alignItems: 'center',
+          // width,
+          // justifyContent: 'center',
+          // alignItems: 'center',
         }}>
         {renderView()}
       </LinearGradient>
@@ -170,10 +198,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    alignItems: 'center',
 
+    backgroundColor: 'black',
+    // width,
+    // alignItems: 'center',
+  },
+  listStyle: {
+    flex: 1,
+    width,
   },
   loader: {
     position: 'absolute',
@@ -186,19 +218,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginVertical: 5,
-    padding:5,
+    padding: 5,
     shadowColor: 'black',
     shadowOffset: {
       width: 10,
       height: 2,
     },
-
     shadowOpacity: 0.63,
     shadowRadius: 2.62,
     elevation: 10,
     backgroundColor: 'transparent',
-    opacity:0.9,
-    width: width - 10,
+    opacity: 0.9,
+    width: width,
     borderRadius: 16.6,
     borderWidth: 2,
     borderColor: 'white',

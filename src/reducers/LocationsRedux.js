@@ -6,6 +6,7 @@ import {PURGE} from 'redux-persist';
 export const INITIAL_STATE = {
   locations: [],
   favoriteLocations: [],
+  units: true
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -16,6 +17,8 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, favoriteLocations: action.payload};
     case types.DELETE_FAVORITE_LOCATION:
       return {...state, favoriteLocations: action.payload};
+      case types.CHANGE_TEMPERATURE_UNITS:
+        return {...state, units: action.payload};
     case PURGE:
       return {...INITIAL_STATE}; // Return the initial state of this reducer to 'reset' the app
     default:
